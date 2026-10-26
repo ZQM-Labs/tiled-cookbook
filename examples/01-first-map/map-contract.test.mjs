@@ -50,3 +50,43 @@ test("quest markers are points within map bounds and permit safe recovery", () =
     );
   }
 });
+
+test("Tiled editor ID counters remain ahead of all assigned IDs", () => {
+  assert.ok(Array.isArray(map.layers), "map layers must be an array");
+  const layerIds = map.layers.map((layer) => layer.id);
+  assert.ok(layerIds.every((id) => Number.isInteger(id) && id > 0), "every layer needs a positive integer ID");
+  assert.equal(new Set(layerIds).size, layerIds.length, "layer IDs must be globally unique");
+  assert.ok(Number.isInteger(map.nextlayerid), "nextlayerid must be an integer");
+  assert.ok(map.nextlayerid > Math.max(0, ...layerIds), "nextlayerid must exceed every layer ID");
+
+  const objects = map.layers.flatMap((layer) => {
+    if (layer.type !== "objectgroup") return [];
+    assert.ok(Array.isArray(layer.objects), `${layer.name} objects must be an array`);
+    return layer.objects;
+  });
+  const objectIds = objects.map((object) => object.id);
+  assert.ok(objectIds.every((id) => Number.isInteger(id) && id > 0), "every object needs a positive integer ID");
+  assert.equal(new Set(objectIds).size, objectIds.length, "object IDs must be unique across all object layers");
+  assert.ok(Number.isInteger(map.nextobjectid), "nextobjectid must be an integer");
+  assert.ok(map.nextobjectid > Math.max(0, ...objectIds), "nextobjectid must exceed every object ID");
+});
+
+test("checkpoint properties have unique names and explicit Tiled types", () => {
+  const markers = map.layers.find((layer) => layer.name === "Quest Markers");
+  assert.ok(markers, "Quest Markers object layer must exist");
+
+  for (const object of markers.objects) {
+    assert.ok(Number.isFinite(object.x) && Number.isFinite(object.y), `${object.name} coordinates must be finite`);
+    assert.ok(Array.isArray(object.properties), `${object.name} properties must be an array`);
+    const names = object.properties.map((property) => property.name);
+    assert.ok(names.every((name) => typeof name === "string" && name.length > 0), `${object.name} properties need names`);
+    assert.equal(new Set(names).size, names.length, `${object.name} property names must be unique`);
+
+    const checkpoint = object.properties.find((property) => property.name === "checkpoint_id");
+    const fallback = object.properties.find((property) => property.name === "manual_fallback_allowed");
+    assert.equal(checkpoint?.type, "string", `${object.name} checkpoint_id must be a string property`);
+    assert.equal(typeof checkpoint?.value, "string", `${object.name} checkpoint_id value must be a string`);
+    assert.equal(fallback?.type, "bool", `${object.name} manual fallback must be a bool property`);
+    assert.equal(typeof fallback?.value, "boolean", `${object.name} manual fallback value must be boolean`);
+  }
+});
