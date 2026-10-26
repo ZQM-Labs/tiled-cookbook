@@ -1,0 +1,11 @@
+{
+  "name": "zqm-tiled-first-map-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test map-contract.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
