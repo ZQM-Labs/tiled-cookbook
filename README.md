@@ -15,7 +15,7 @@ A **Tiled cookbook** for tile maps in location games: maps, tilesets, object lay
 
 ## Repository role and status
 
-**Status:** Active, public — seeding. Pattern passes land in follow-up work; the table below lists what is planned, not what is already written.
+**Status:** Active, public — first structural map pattern implemented. Pattern status is marked individually below; static validation does not replace opening the map in Tiled or importing it into a game engine.
 
 **What this repository is:** Tiled patterns — maps, tilesets, quest object layers, and web export.
 
@@ -33,20 +33,36 @@ Game developers and level designers working with tile maps for location and ques
 - A tile set (synthetic or openly licensed, with provenance noted)
 - A web game client that can load the exported map format
 
-## Patterns (planned)
+## Patterns
 
-| # | Example | What it will demonstrate |
-|---|---------|--------------------------|
-| 01 | `01-first-map` | A first playable tile map: layers, tiles, and collision |
-| 02 | `02-tilesets` | Building and managing tilesets, including terrain transitions |
-| 03 | `03-object-layers-quests` | Object layers as quest content: checkpoints, triggers, and objectives |
-| 04 | `04-export-web` | Exporting maps for web delivery and loading them in a browser game |
+| # | Example | Status | What it demonstrates |
+|---|---------|--------|----------------------|
+| 01 | `01-first-map` | Implemented scaffold | Orthogonal map dimensions, tile-layer structure, quest marker objects, stable checkpoint IDs, and fallback metadata; no art tileset yet |
+| 02 | `02-tilesets` | Planned | Building and managing tilesets, including terrain transitions |
+| 03 | `03-object-layers-quests` | Planned | Object layers as quest content: checkpoints, triggers, and objectives |
+| 04 | `04-export-web` | Planned | Exporting maps for web delivery and loading them in a browser game |
+
+## Quick start
+
+Requires Node.js 20 or newer to run the structural regression tests:
+
+```sh
+cd examples/01-first-map
+npm test
+```
+
+Open `examples/01-first-map/first-map.tmj` in Tiled 1.10 or newer. The ground layer intentionally contains only empty GIDs; this starter focuses on quest-object metadata, not art, collision, or a playable scene. See the pattern README for scope and limitations.
 
 ## Repository layout
 
 ```text
 tiled-cookbook/
-├── examples/  # one directory per pattern
+├── .github/workflows/examples.yml
+├── examples/01-first-map/
+│   ├── first-map.tmj
+│   ├── map-contract.test.mjs
+│   ├── package.json
+│   └── README.md
 ├── README.md
 └── LICENSE
 ```

@@ -1,0 +1,31 @@
+name: Cookbook examples
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tiled-cookbook-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  map-contract:
+    name: Tiled map contract (Node.js 20)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/01-first-map
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate map structure
+        run: npm test
